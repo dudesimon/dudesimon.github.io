@@ -1,5 +1,6 @@
 import React from 'react';
 import DiskTrack from './DiskTrack';
+import "./../style/Radial.css";
 
 const Radial = ({ trackCount, radialCount }) => {
   const trackRadius = 45;
