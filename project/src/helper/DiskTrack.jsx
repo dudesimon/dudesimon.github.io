@@ -1,8 +1,8 @@
 import React from "react";
 import "./../style/DiskTrack.css";
 
-const DiskTrack = ({ trackCount }) => {
-  const radius = 70; //might have to adjust
+const DiskTrack = ({ trackCount, radius }) => {
+  // const radius = 70; //might have to adjust
   const trackElements = Array.from({ length: trackCount }, (_, index) => (
     <div key={index} className="track">
       {index}
