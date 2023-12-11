@@ -8,35 +8,86 @@ function App() {
     const [numberOfTracks, setNumberOfTracks] = useState(4);
     const [degreeRotation, setDegreeRotation] = useState(61);
     const [currentData, setCurrentData] = useState("");
-    const [writeData, setWriteData] = useState("");
     const [isWriting, setIsWriting] = useState(false);
+    const [currentlyWriting, setCurrentlyWriting] = useState(-1)
+    const [trackData, setTrackData] = useState([...Array(numberOfTracks)].map((v, i) => {
+        return {
+            id: i,
+            maxSize: 2 ** (i + 1),
+            data: []
+        }
+    }))
 
-    const goToTrack = () => {
-      setDegreeRotation((prevDegreeRotation) => {
-          let nextTrack = 0;
-  
-          // find track with empty data
-          while (nextTrack < numberOfTracks && trackData[nextTrack].data.length > 0) {
-              nextTrack++;
-          }
-  
-          // if tracks are full, just stay
-          if (nextTrack === numberOfTracks) {
-              return prevDegreeRotation;
-          }
-  
-          return (55 / numberOfTracks) * (nextTrack + 1);
-      });
-  };
+    useEffect(() => {
+        setTrackData([...Array(numberOfTracks)].map((v, i) => {
+            return {
+                id: i,
+                maxSize: 2 ** (i + 1),
+                data: []
+            }
+        }))
+    }, [numberOfTracks])
 
-    const startWritingData = () => {
+    const removeHeadFromTrack = () => {
+        setDegreeRotation(61)
+    }
+
+    const goToTrack = (trackNumber) => {
+        setDegreeRotation((55 / numberOfTracks) * (trackNumber + 1))
+    }
+
+    const waitForArm = async () => {
+        await new Promise(resolve => setTimeout(() => resolve(), 300));
+    }
+
+    const startWritingData = async () => {
 
         setIsWriting(true);
-        goToTrack(); // this activates the animation
-        setWriteData(currentData); // this tells the platter what to write
-        setCurrentData(""); // this clears the input
-        setIsWriting(false); // this locks the input
+        let bits = currentData.split("").reverse()
+        let track = 0
+
+        while (bits.length > 0) {
+            let success = false
+            while (true) {
+                if (track >= numberOfTracks) {
+                    break
+                }
+                else if (trackData[track].maxSize === trackData[track].data.length) {
+                    track++
+                } else {
+                    success = true
+                    break
+                }
+            }
+
+            if (!success) {
+                alert("One or more bits were not able to be written to the disk.")
+                setCurrentData("")
+                setCurrentlyWriting(-1)
+                setIsWriting(false)
+                return
+            }
+
+            console.log("GOING TO TRACK", track)
+
+            goToTrack(track); // this activates the animation
+            const currentBit = bits.pop()
+            setCurrentlyWriting(currentBit)
+            // WAIT FOR ARM
+            await waitForArm()
+            
+            trackData[track].data.push(currentBit)
+
+            // write the data to the appropriate track (which you calculated)
+            setCurrentData(bits.reverse().join(""))
+            bits.reverse()
+        }
+        setIsWriting(false)
+        removeHeadFromTrack()
+        setCurrentlyWriting(-1)
     };
+
+    console.log(trackData)
 
     return (
         <>
@@ -46,15 +97,20 @@ function App() {
                     <label>
                         Number of Tracks
                         <select
-                            onChange={(e) => setNumberOfTracks(+e.target.value)}
+                            onChange={(e) => {
+                                const c = confirm("Changing the number of tracks will wipe the disk. Are you sure?")
+                                if(c) {
+                                    setNumberOfTracks(+e.target.value)
+                                }
+                            }}
                             value={numberOfTracks}
                             style={{ marginLeft: "5px" }}
                         >
                             {[
                                 ...Array(
                                     MAX_NUMBER_OF_TRACKS -
-                                        MIN_NUMBER_OF_TRACKS +
-                                        1
+                                    MIN_NUMBER_OF_TRACKS +
+                                    1
                                 ),
                             ].map((_, i) => {
                                 return (
@@ -76,10 +132,11 @@ function App() {
             </section>
             <main>
                 <Radial
-                    writeData={writeData}
                     numberOfTracks={numberOfTracks}
+                    trackData={trackData}
+                    setTrackData={setTrackData}
                 />
-                <DiskArm degreeRotation={degreeRotation} />
+                <DiskArm currentlyWriting={currentlyWriting} degreeRotation={degreeRotation} />
             </main>
         </>
     );

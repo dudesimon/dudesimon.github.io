@@ -1,7 +1,7 @@
 import { PLATTER_SIZE } from "./../assets/constants.jsx";
 
 const DiskArm = (props) => {
-  const { degreeRotation } = props;
+  const { degreeRotation, currentlyWriting } = props;
 
   return (
       <div>
@@ -29,8 +29,14 @@ const DiskArm = (props) => {
                   border: "2px solid white",
                   zIndex: 1,
                   top: `${(PLATTER_SIZE / 2) - 25}px`,
-                  left: "-10px"
-              }}></div>
+                  left: "-10px",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  fontWeight: "bold",
+              }}>
+                { currentlyWriting === -1 ? "" : currentlyWriting }
+              </div>
           </div>
       </div>
   );

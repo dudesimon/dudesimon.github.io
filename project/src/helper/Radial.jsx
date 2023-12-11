@@ -3,42 +3,33 @@ import { PLATTER_SIZE } from "./../assets/constants.jsx";
 import DiskTrack from "./DiskTrack.jsx"
 
 const Radial = (props) => {
-    const { numberOfTracks, writeData } = props
+    const { numberOfTracks, writeData, trackData, setTrackData } = props
     const [hovered, setHovered] = useState(-1)
-    const [trackData, setTrackData] = useState([...Array(numberOfTracks)].map((v, i) => {
-        return {
-            id: i,
-            maxSize: 2**(i + 1),
-            data: []
-        }
-    }))
 
-    useEffect(() => {
-        setTrackData((prevTrackData) => {
-        for (let i = 0; i < prevTrackData.length; i++) {
-            const track = prevTrackData[i];
-            const remainingSpace = track.maxSize - track.data.length;
+//     useEffect(() => {
+//         setTrackData((prevTrackData) => {
+//         for (let i = 0; i < prevTrackData.length; i++) {
+//             const track = prevTrackData[i];
+//             const remainingSpace = track.maxSize - track.data.length;
 
-            if (remainingSpace >= writeData.length) {
-                return prevTrackData.map((v, index) => {
-                    if (index === i) {
-                        return {
-                            ...v,
-                            data: [...v.data, ...writeData.split("")]
-                        };
-                    } else {
-                        return v;
-                    }
-                });
-            }
-        }
+//             if (remainingSpace >= writeData.length) {
+//                 return prevTrackData.map((v, index) => {
+//                     if (index === i) {
+//                         return {
+//                             ...v,
+//                             data: [...v.data, ...writeData.split("")]
+//                         };
+//                     } else {
+//                         return v;
+//                     }
+//                 });
+//             }
+//         }
 
-        // If no track has enough space, return the unchanged state
-        return prevTrackData;
-    });
-}, [writeData]);
-
-    console.log(trackData)
+//         // If no track has enough space, return the unchanged state
+//         return prevTrackData;
+//     });
+// }, [writeData]);
 
     return (
         <div
