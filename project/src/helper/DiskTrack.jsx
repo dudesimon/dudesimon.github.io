@@ -1,29 +1,23 @@
-import React from "react";
-import "./../style/DiskTrack.css";
-
-const DiskTrack = ({ trackCount, radius }) => {
-  // const radius = 70; //might have to adjust
-  const trackElements = Array.from({ length: trackCount }, (_, index) => (
-    <div key={index} className="track">
-      {index}
-    </div>
-  ));
-
-  return (
-  <div className="disk-track">
-    {trackElements.map((track, index) => (
-      <div key={index} className="track" style={{ ...calculateTrackStyle(trackCount, radius, index) }}
-      > {track} </div>
-    ))}
-    </div>
-  );
-};
-
-const calculateTrackStyle = (trackCount, radius, index) => {
-  const angle = (360 / trackCount) * index;
-  return {
-    transform: `rotate(${angle}deg) translate(${radius}px) rotate(-${angle}deg)`,
+const DiskTrack = (props) => {
+  const { radius, hovered, setHovered, unsetHovered } = props;
+  const styles = {
+    width: `${radius}px`,
+    height: `${radius}px`,
+    border: "3px solid black",
+    borderRadius: "100%",
+    position: "absolute",
+    background: hovered
+      ? "linear-gradient(to right,#8ae68b,#6713df)"
+      : "linear-gradient(to right, #eee, #000)",
+    borderColor: hovered ? "white" : "black",
+    cursor: hovered ? "pointer" : "default",
   };
-};
-
+  return (
+    <div
+      onMouseOver={setHovered}
+      onMouseLeave={unsetHovered}
+      style={styles}
+    ></div>
+  );
+}
 export default DiskTrack;

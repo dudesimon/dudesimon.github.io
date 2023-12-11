@@ -1,8 +1,0 @@
-.radial-container {
-    display: flex;
-    flex-direction: column-reverse; /* Stack Radial components in a column in reverse order */
-  }
-  
-  .radial {
-    margin-top: auto; /* Adjust as needed */
-  }
