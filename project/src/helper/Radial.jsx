@@ -5,31 +5,14 @@ import DiskTrack from "./DiskTrack.jsx"
 const Radial = (props) => {
     const { numberOfTracks, writeData, trackData, setTrackData } = props
     const [hovered, setHovered] = useState(-1)
-
-//     useEffect(() => {
-//         setTrackData((prevTrackData) => {
-//         for (let i = 0; i < prevTrackData.length; i++) {
-//             const track = prevTrackData[i];
-//             const remainingSpace = track.maxSize - track.data.length;
-
-//             if (remainingSpace >= writeData.length) {
-//                 return prevTrackData.map((v, index) => {
-//                     if (index === i) {
-//                         return {
-//                             ...v,
-//                             data: [...v.data, ...writeData.split("")]
-//                         };
-//                     } else {
-//                         return v;
-//                     }
-//                 });
-//             }
-//         }
-
-//         // If no track has enough space, return the unchanged state
-//         return prevTrackData;
-//     });
-// }, [writeData]);
+    
+    const handleClick = (trackNumber) => {
+        // Calculate the reversed track number
+        const reversedTrackNumber = numberOfTracks - 1 - trackNumber;
+    
+        const dataInSelectedTrack = trackData[reversedTrackNumber].data;
+        alert(`Inside this track: ${dataInSelectedTrack}`);
+    };
 
     return (
         <div
@@ -54,6 +37,7 @@ const Radial = (props) => {
                         hovered={hovered === i}
                         setHovered={() => setHovered(i)}
                         unsetHovered={() => setHovered(-1)}
+                        onClick={() => handleClick(i)}
                         key={i}
                     />
                 );

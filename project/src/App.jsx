@@ -73,12 +73,11 @@ function App() {
             goToTrack(track); // this activates the animation
             const currentBit = bits.pop()
             setCurrentlyWriting(currentBit)
-            // WAIT FOR ARM
+            // wait for arm
             await waitForArm()
             
             trackData[track].data.push(currentBit)
-
-            // write the data to the appropriate track (which you calculated)
+            // write the data to track
             setCurrentData(bits.reverse().join(""))
             bits.reverse()
         }

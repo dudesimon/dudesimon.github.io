@@ -1,5 +1,5 @@
 const DiskTrack = (props) => {
-  const { radius, hovered, setHovered, unsetHovered } = props;
+  const { radius, hovered, setHovered, unsetHovered, onClick } = props;
   const styles = {
     width: `${radius}px`,
     height: `${radius}px`,
@@ -16,6 +16,7 @@ const DiskTrack = (props) => {
     <div
       onMouseOver={setHovered}
       onMouseLeave={unsetHovered}
+      onClick={onClick}
       style={styles}
     ></div>
   );
