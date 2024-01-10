@@ -9,3 +9,7 @@ with the draggable list, how the numbers are accessed through the head
 
 Paper-wise 
 Have to finalize the experimentation portion of the paper find out about the IRB
+
+
+[] Poggers
+
