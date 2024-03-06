@@ -5,7 +5,7 @@ const DiskArm = (props) => {
 
   return (
       <div>
-          <div style={{ position: "absolute", top: 70, left: "calc(50% - 12.5px)", zIndex: 0, background: "black", width: "25px", height: "25px", borderRadius: "100%"}}></div>
+          <div style={{ position: "absolute", top: 150, left: "calc(50% - 12.5px)", zIndex: 0, background: "black", width: "25px", height: "25px", borderRadius: "100%"}}></div>
           <div
               style={{
                   background: "black",
@@ -13,7 +13,7 @@ const DiskArm = (props) => {
                   height: `${PLATTER_SIZE / 2}px`,
                   position: "absolute",
                   zIndex: 1,
-                  top: 80,
+                  top: 160,
                   left: "50%",
                   transformOrigin: "top center",
                   transform: `rotate(${degreeRotation}deg)`,
