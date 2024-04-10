@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { TextField, Button, makeStyles } from '@material-ui/core';
 import { NumbersContext } from './NumbersContext';
+import { PlayCircleFilledWhite } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -50,8 +51,11 @@ const NumberInput = () => {
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder="Enter numbers (separated by commas)" />
-            <Button className={classes.addButton} onClick={handleSubmit}>
+                placeholder="Enter numbers (separated by commas)" 
+                inputProps={{ min: 0}}
+                InputProps={{ style: { color: 'white' } }}
+                />
+            <Button className={classes.addButton} onClick={handleSubmit} style={{ color: 'white', border: '1px solid white' }}>
                 Append To Reference Stream
             </Button>
         </div>

@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import { PLATTER_SIZE } from "../assets/constants";
+import { PLATTER_SIZE, SPINDLE_SIZE } from "../assets/constants";
 
 const DiskTrack = (props) => {
-  const { radius, hovered, setHovered, unsetHovered, onClick, sectorCount, numberOfTracks, trackNumber } = props;
+  const { radius, hovered, setHovered, unsetHovered, onClick, sectorCount, numberOfTracks, trackNumber, isAnimationEnabled } = props;
 
   const styles = {
     width: `${radius}px`,
     height: `${radius}px`,
-    border: "3px solid black",
+    outline: "3px solid black",
     borderRadius: "50%",
     position: "absolute",
     background: hovered
@@ -18,32 +18,34 @@ const DiskTrack = (props) => {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    zIndex: trackNumber,
   };
 
   const additionalDivStyles = {
-    width: `25%`,
-    height: `25%`,
+    width: `${SPINDLE_SIZE}px`,
+    height: `${SPINDLE_SIZE}px`,
     background:"linear-gradient(to right, #eee, #000)",
     borderRadius: "50%",
-    border: "3px solid black",
+    outline: "3px solid black",
     position: "absolute",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    zIndex: 2, 
+    zIndex: 1000
   };
 
 
   return (
-    console.log(trackNumber, radius),
     <div
       onMouseOver={setHovered}
       onMouseLeave={unsetHovered}
       onClick={onClick}
-      style={styles}
+      style={
+        styles
+      }
     >
       {[...Array(+sectorCount)].map((_, index) => {
-        const offset = radius - (PLATTER_SIZE / 2 / numberOfTracks)
+        const offset = radius - ((PLATTER_SIZE - SPINDLE_SIZE) / numberOfTracks) / 2
         const topAngle = ((360 / +sectorCount) * index)
 
         const horizontalOffset = Math.cos(topAngle * (Math.PI / 180)) * offset
@@ -55,8 +57,11 @@ const DiskTrack = (props) => {
             marginTop: verticalOffset + "px",
             marginLeft: horizontalOffset + "px",
             fontWeight: "bold",
-            fontSize: `${5 + (14 - +sectorCount)}px`,
-            //animation: "rotate linear 5s infinite forwards"
+            fontSize: `${10 + (20 - +sectorCount)}px`,
+            "-webkit-text-fill-color": "white", /* Will override color (regardless of order) */
+            "-webkit-text-stroke-width": "1px",
+            "-webkit-text-stroke-color": "black",
+            animation: isAnimationEnabled ? "rotate linear 7s infinite forwards" : 'none',
           }}>
             {((numberOfTracks - trackNumber) * sectorCount) + index}
           </div>

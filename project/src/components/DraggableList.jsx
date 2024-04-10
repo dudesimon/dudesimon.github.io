@@ -29,7 +29,7 @@ const useStyles = makeStyles({
 
 const DraggableList = () => {
   const classes = useStyles();
-  const { numbers, setNumbers, markListAsModified } = useContext(NumbersContext);
+  const { numbers, setNumbers } = useContext(NumbersContext);
   const [editingId, setEditingId] = useState(null);
   const [editText, setEditText] = useState('');
 
@@ -85,7 +85,6 @@ const DraggableList = () => {
 
   const deleteItem = (id) => {
     const updatedNumbers = numbers.filter(item => item.id !== id);
-    markListAsModified();
     setNumbers(updatedNumbers);
   };
 

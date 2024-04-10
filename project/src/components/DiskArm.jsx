@@ -1,4 +1,4 @@
-import { PLATTER_SIZE } from "./../assets/constants.jsx";
+import { PLATTER_SIZE } from "./../assets/constants";
 
 const DiskArm = (props) => {
   const { degreeRotation, currentlyWriting } = props;
@@ -12,12 +12,12 @@ const DiskArm = (props) => {
                   width: "5px",
                   height: `${PLATTER_SIZE / 2}px`,
                   position: "absolute",
-                  zIndex: 1,
+                  zIndex: 1000,
                   top: 160,
                   left: "50%",
                   transformOrigin: "top center",
                   transform: `rotate(${degreeRotation}deg)`,
-                  transition: "0.1s linear",
+                  transition: "0.5s linear",
               }}
           >
               <div style={{ 
@@ -27,7 +27,7 @@ const DiskArm = (props) => {
                   borderRadius: "20px",
                   position: "relative", 
                   border: "2px solid white",
-                  zIndex: 1,
+                  zIndex: 1000,
                   top: `${(PLATTER_SIZE / 2) - 25}px`,
                   left: "-10px",
                   display: "flex",

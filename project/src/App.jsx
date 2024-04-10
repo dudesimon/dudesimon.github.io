@@ -1,18 +1,19 @@
-import { MAX_NUMBER_OF_TRACKS, MIN_NUMBER_OF_TRACKS } from "./assets/constants.jsx";
-import React, { useEffect, useState } from "react";
-import Radial from "./components/Radial.jsx";
-import DiskArm from "./components/DiskArm.jsx";
-import NumberInput from "./components/NumbersInput.jsx";
+import { MAX_NUMBER_OF_TRACKS, MIN_NUMBER_OF_TRACKS, PLATTER_SIZE, SPINDLE_SIZE } from "./assets/constants";
+import React, { useContext, useEffect, useState } from "react";
+import Radial from "./components/Radial";
+import DiskArm from "./components/DiskArm";
+import NumberInput from "./components/NumbersInput";
 import "./App.css";
-import DraggableList from "./components/DraggableList.jsx";
-import { NumbersProvider } from "./components/NumbersContext.jsx";
+import DraggableList from "./components/DraggableList";
+import { NumbersContext, NumbersProvider } from "./components/NumbersContext";
 
 function App() {
-    const [numberOfTracks, setNumberOfTracks] = useState(2);
+    const [numberOfTracks, setNumberOfTracks] = useState(1);
     const [degreeRotation, setDegreeRotation] = useState(61);
     const [currentData, setCurrentData] = useState("");
     const [isWriting, setIsWriting] = useState(false);
     const [currentlyWriting, setCurrentlyWriting] = useState(-1)
+    const { numbers } = useContext(NumbersContext)
     const [trackData, setTrackData] = useState([...Array(numberOfTracks)].map((v, i) => {
         return {
             id: i,
@@ -20,6 +21,8 @@ function App() {
             data: []
         }
     }))
+    //animation trial
+    const [isAnimationEnabled, setIsAnimationEnabled] = useState(false);
 
     //trial
     const [sectorCount, setSectorCount] = useState("6");
@@ -28,7 +31,6 @@ function App() {
         setSectorCount(event.target.value)
     };
     //end
-
 
     useEffect(() => {
         setTrackData([...Array(numberOfTracks)].map((v, i) => {
@@ -45,122 +47,109 @@ function App() {
     }
 
     const goToTrack = (trackNumber) => {
-        setDegreeRotation((55 / numberOfTracks) * (trackNumber + 1))
+        const d1 = 280
+        const r1 = 290
+        const radius = ((PLATTER_SIZE - SPINDLE_SIZE) / numberOfTracks) * (trackNumber + 1) + SPINDLE_SIZE
+        const r2 = radius - ((PLATTER_SIZE - SPINDLE_SIZE) / numberOfTracks) / 2
+        const rotation = Math.acos((d1 ** 2 + r1 ** 2 - r2 ** 2) / (2 * d1 * r1)) * (180 / Math.PI)
+        //console.log(trackNumber, radius, r2, rotation)
+        setDegreeRotation(rotation / 2)
     }
 
     const waitForArm = async () => {
-        await new Promise(resolve => setTimeout(() => resolve(), 300));
+        await new Promise(resolve => setTimeout(() => resolve(), 2000));
     }
 
-    // const startWritingData = async () => {
+    //Numbers from NumbersContext
+    //console.log(numbers.map(number => +number.primary))
 
-    //     setIsWriting(true);
-    //     let bits = currentData.split("").reverse()
-    //     let track = 0
+    const enableAnimation = () => {
+        setIsAnimationEnabled(false);
+    };
 
-    //     while (bits.length > 0) {
-    //         let success = false
-    //         while (true) {
-    //             if (track >= numberOfTracks) {
-    //                 break
-    //             }
-    //             else if (trackData[track].maxSize === trackData[track].data.length) {
-    //                 track++
-    //             } else {
-    //                 success = true
-    //                 break
-    //             }
-    //         }
+    const startWritingData = async () => {
+        setIsWriting(true);
+        for (const number of numbers) {
+            const track = Math.floor(+number.primary / +sectorCount);
+            setCurrentlyWriting(+number.primary);
+            if (+number.primary + 1 > +sectorCount) {
+                alert("The number entered exceeds the number of sectors")
+            } else {
+                setIsAnimationEnabled(true);
+                await waitForArm();
+                goToTrack(track);
+                await waitForArm();
+                setIsAnimationEnabled(false);
+            }
 
-    //         if (!success) {
-    //             alert("One or more bits were not able to be written to the disk.")
-    //             setCurrentData("")
-    //             setCurrentlyWriting(-1)
-    //             setIsWriting(false)
-    //             return
-    //         }
-
-    //         console.log("GOING TO TRACK", track)
-
-    //         goToTrack(track); // this activates the animation
-    //         const currentBit = bits.pop()
-    //         setCurrentlyWriting(currentBit)
-    //         // wait for arm
-    //         await waitForArm()
-
-    //         trackData[track].data.push(currentBit)
-    //         // write the data to track
-    //         setCurrentData(bits.reverse().join(""))
-    //         bits.reverse()
-    //     }
-    //     setIsWriting(false)
-    //     removeHeadFromTrack()
-    //     setCurrentlyWriting(-1)
-    // };
-
-    console.log(trackData)
+        }
+        removeHeadFromTrack();
+        setCurrentlyWriting(-1);
+    }
 
     return (
         <>
-            <NumbersProvider>
-                <section>
-                    <fieldset>
-                        <legend>Settings</legend>
-                        <label>
-                            Number of Tracks
-                            <select
-                                onChange={(e) => {
-                                    const c = confirm("Changing the number of tracks will wipe the disk. Are you sure?")
-                                    if (c) {
-                                        setNumberOfTracks(+e.target.value)
-                                    }
-                                }}
-                                value={numberOfTracks}
-                                style={{ marginLeft: "5px" }}
-                            >
-                                {[
-                                    ...Array(
-                                        MAX_NUMBER_OF_TRACKS -
-                                        MIN_NUMBER_OF_TRACKS +
-                                        1
-                                    ),
-                                ].map((_, i) => {
-                                    return (
-                                        <option key={i} value={i + 2}>
-                                            {i + 2}
-                                        </option>
-                                    );
-                                })}
-                            </select>
-                        </label>
-                        <NumberInput />
 
-                        <label>
-                            Number of Sectors
-                            <select value={sectorCount} onChange={handleSectorCountChange} >
-                                {
-                                    [...new Array(5)].map((_, i) => {
-                                        return (
-                                            <option value={`${i + 6}`} key={`${i + 6}`}>{i + 6}</option>
-                                        )
-                                    })
+            <section>
+                <fieldset>
+                    <legend>Settings</legend>
+                    <label>
+                        Number of Tracks
+                        <select
+                            onChange={(e) => {
+                                const c = confirm("Changing the number of tracks will wipe the disk. Are you sure?")
+                                if (c) {
+                                    setNumberOfTracks(+e.target.value)
+                                    enableAnimation(false)
                                 }
-                            </select>
-                        </label>
-                    </fieldset>
-                </section>
-                <main>
-                    <Radial
-                        numberOfTracks={numberOfTracks}
-                        trackData={trackData}
-                        setTrackData={setTrackData}
-                        sectorCount={sectorCount}
-                    />
-                    <DiskArm currentlyWriting={currentlyWriting} degreeRotation={degreeRotation} />
-                    <DraggableList />
-                </main>
+                            }}
+                            value={numberOfTracks}
+                            style={{ marginLeft: "5px" }}
+                        >
+                            {[
+                                ...Array(
+                                    MAX_NUMBER_OF_TRACKS -
+                                    MIN_NUMBER_OF_TRACKS +
+                                    1
+                                ),
+                            ].map((_, i) => {
+                                return (
+                                    <option key={i} value={i + 1}>
+                                        {i + 1}
+                                    </option>
+                                );
+                            })}
+                        </select>
+                    </label>
+                    <NumberInput />
 
-            </NumbersProvider>
+                    <label>
+                        Number of Sectors
+                        <select value={sectorCount} onChange={handleSectorCountChange} >
+                            {
+                                [...new Array(7)].map((_, i) => {
+                                    return (
+                                        <option value={`${i + 6}`} key={`${i + 6}`}>{i + 6}</option>
+                                    )
+                                })
+                            }
+                        </select>
+                    </label>
+                </fieldset>
+            </section>
+            <main>
+                <Radial
+                    numberOfTracks={numberOfTracks}
+                    trackData={trackData}
+                    setTrackData={setTrackData}
+                    sectorCount={sectorCount}
+                    isAnimationEnabled={isAnimationEnabled}
+                    enableAnimation={enableAnimation}
+                />
+                <DiskArm currentlyWriting={currentlyWriting} degreeRotation={degreeRotation} />
+                <button onClick={startWritingData} style={{ backgroundColor: numbers.length > 0 ? 'green' : 'initial' }}>Start!</button>
+                <DraggableList />
+            </main>
         </>
     );
 }
