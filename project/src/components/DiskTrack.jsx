@@ -61,7 +61,7 @@ const DiskTrack = (props) => {
             "-webkit-text-fill-color": "white", /* Will override color (regardless of order) */
             "-webkit-text-stroke-width": "1px",
             "-webkit-text-stroke-color": "black",
-            animation: isAnimationEnabled ? "rotate linear 7s infinite forwards" : 'none',
+            animation: isAnimationEnabled ? "rotate linear 4.7s infinite forwards" : 'none',
           }}>
             {((numberOfTracks - trackNumber) * sectorCount) + index}
           </div>

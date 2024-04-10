@@ -27,7 +27,7 @@ const Radial = (props) => {
                 justifyContent: "center",
                 alignItems: "center",
                 
-                animation: isAnimationEnabled ? `rotate linear 7s infinite reverse` : 'none',
+                animation: isAnimationEnabled ? `rotate linear 4.7s infinite reverse` : 'none',
             }}
         >
             {[...Array(numberOfTracks)].map((_, i) => {

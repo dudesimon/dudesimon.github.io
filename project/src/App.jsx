@@ -57,7 +57,7 @@ function App() {
     }
 
     const waitForArm = async () => {
-        await new Promise(resolve => setTimeout(() => resolve(), 2000));
+        await new Promise(resolve => setTimeout(() => resolve(), 4000));
     }
 
     //Numbers from NumbersContext
@@ -72,11 +72,12 @@ function App() {
         for (const number of numbers) {
             const track = Math.floor(+number.primary / +sectorCount);
             setCurrentlyWriting(+number.primary);
-            if (+number.primary + 1 > +sectorCount) {
+            if (+number.primary + 1 > +sectorCount * numberOfTracks) {
+                console.log(+sectorCount * numberOfTracks)
                 alert("The number entered exceeds the number of sectors")
             } else {
                 setIsAnimationEnabled(true);
-                await waitForArm();
+                // await waitForArm();
                 goToTrack(track);
                 await waitForArm();
                 setIsAnimationEnabled(false);

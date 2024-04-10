@@ -73,9 +73,9 @@ const DraggableList = () => {
             return item;
         });
 
-        if (isModified) {
-            markListAsModified(); // Only mark as modified if there's an actual change
-        }
+        // if (isModified) {
+        //     markListAsModified(); // Only mark as modified if there's an actual change
+        // }
 
         setNumbers(updatedNumbers);
     }
