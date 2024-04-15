@@ -86,6 +86,7 @@ function App() {
         }
         removeHeadFromTrack();
         setCurrentlyWriting(-1);
+        setIsWriting(false);
     }
 
     return (
@@ -98,14 +99,14 @@ function App() {
                         Number of Tracks
                         <select
                             onChange={(e) => {
-                                const c = confirm("Changing the number of tracks will wipe the disk. Are you sure?")
-                                if (c) {
-                                    setNumberOfTracks(+e.target.value)
-                                    enableAnimation(false)
-                                }
+
+                                setNumberOfTracks(+e.target.value)
+                                enableAnimation(false)
+
                             }}
                             value={numberOfTracks}
                             style={{ marginLeft: "5px" }}
+                            disabled={isWriting}
                         >
                             {[
                                 ...Array(
@@ -126,7 +127,7 @@ function App() {
 
                     <label>
                         Number of Sectors
-                        <select value={sectorCount} onChange={handleSectorCountChange} >
+                        <select value={sectorCount} onChange={handleSectorCountChange} disabled={isWriting} >
                             {
                                 [...new Array(7)].map((_, i) => {
                                     return (
